@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Wheel - Garage</title>
+  <style>
+    /* 🛑 QUITAR SCROLL */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background: #0a0a1a;
+    }
+
+    /* 📌 CONTENEDOR PRINCIPAL */
+    .container {
+      position: relative;
+      max-width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    /* 🎥 VIDEO RESPONSIVO */
+    .video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(45%);
+    }
+
+    /* 🔵 TÍTULO */
+    .title-blue {
+      font-size: clamp(2rem, 6vw, 5rem);
+      font-weight: 900;
+      color: white;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px #0074d9, 0 0 20px #7fdbff;
+      letter-spacing: 4px;
+      margin: 0 0 20px 0;
+      text-align: center;
+    }
+
+    /* 🎮 BOTÓN */
+    .playgame {
+      width: 150px;
+      height: 30px;
+      border-radius: 8px;
+     
+      color: white;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-transform: capitalize;
+font-family: 'Times New Roman', Times, serif;
+text-align: center;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+     }
+
+    .playgame:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, #1890ff, #0074d9);
+      box-shadow: 0 6px 20px rgba(0, 116, 217, 0.6);
+    }
+
+    /* PANTALLAS PRINCIPALES */
+    .screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.5s ease;
+    }
+
+    .hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* GARAGE SCREEN */
+    .garage-screen {
+      background-image:url("./garaja.png")
+
+    }
+
+    .garage-header {
+      padding: 30px;
+      text-align: center;
+    }
+
+    .garage-title {
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px #0074d9;
+      margin-bottom: 10px;
+    }
+
+    .garage-subtitle {
+      color: #7fdbff;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    .cars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 40px;
+      flex: 1;
+      align-content: center;
+    }
+
+    .car-card {
+      background: rgba(30, 30, 50, 0.9);
+      border-radius: 15px;
+      padding: 25px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .car-card:hover {
+      border-color: #0074d9;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 116, 217, 0.3);
+    }
+
+    .car-name {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+
+    .car-image {
+      width: 100%;
+      height: 180px;
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .car-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+      transition: all 0.3s ease;
+    }
+
+    .car-card:hover .car-image img {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 15px #0074d9);
+    }
+
+    .car-specs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .spec-item {
+      color: #7fdbff;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .spec-value {
+      color: white;
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .select-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0074d9, #0056b3);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .select-btn:hover {
+      background: linear-gradient(135deg, #1890ff, #0074d9);
+      transform: translateY(-2px);
+    }
+
+    /* MAPAS SCREEN */
+    .maps-screen {
+      background-image: 
+ url("./camaro.png");
+background-size: cover;
+background-position: center;
+
+    }
+
+    .maps-container {
+      display: flex;
+      height: 100%;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px;
+margin-top: -200px;
+    }
+
+    .map-preview {
+      background: rgba(30, 30, 50, 0.9);
+      border-radius: 15px;
+      padding: 30px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      width: 350px;
+    }
+
+    .map-preview:hover {
+      border-color: #0074d9;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 116, 217, 0.3);
+    }
+
+    .map-name {
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .map-image {
+      width: 100%;
+      height: 200px;
+      background: rgba(0, 116, 217, 0.2);
+      border-radius: 10px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      color: #0074d9;
+      border: 2px solid #0074d9;
+    }
+.map-image img{
+width: 200px;
+height: auto;
+
+}
+
+    .map-specs {
+      text-align: left;
+      margin: 20px 0;
+    }
+
+    .map-spec-item {
+      color: #7fdbff;
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+
+    .map-spec-value {
+      color: white;
+      font-weight: bold;
+    }
+
+    .navigation {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-btn {
+      background: rgba(0, 116, 217, 0.8);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover {
+      background: rgba(24, 144, 255, 0.9);
+      transform: translateY(-2px);
+    }
+
+    /* SISTEMA DE NAVEGACIÓN CON RADIO BUTTONS */
+    #intro-radio:checked ~ .intro-screen,
+    #garage-radio:checked ~ .garage-screen,
+    #maps-radio:checked ~ .maps-screen {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #intro-radio:checked ~ .intro-screen { z-index: 3; }
+    #garage-radio:checked ~ .garage-screen { z-index: 2; }
+    #maps-radio:checked ~ .maps-screen { z-index: 1; }
+
+    /* Ocultar radio buttons */
+    .screen-radio {
+      display: none;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    .blink {
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+  </style>
+</head>
+<body>
+  <!-- RADIO BUTTONS PARA CONTROLAR LAS PANTALLAS -->
+  <input type="radio" name="screen" id="intro-radio" class="screen-radio" checked>
+  <input type="radio" name="screen" id="garage-radio" class="screen-radio">
+  <input type="radio" name="screen" id="maps-radio" class="screen-radio">
+
+  <!-- INTRO SCREEN -->
+  <div class="screen intro-screen">
+    <video autoplay muted loop playsinline class="video-bg">
+      <source src="./Neon Fury Unleashed.mp4" type="video/mp4" />
+    </video>
+
+    <div class="container">
+      <h1 class="title-blue">Master Wheel</h1>
+      <label for="garage-radio" class="playgame fade-in blink">
+        PlayGame
+      </label>
+    </div>
+  </div>
+
+  <!-- GARAGE SCREEN -->
+  <div class="screen garage-screen hidden">
+    <div class="garage-header">
+      <h1 class="garage-title">Selecciona tu Coche</h1>
+      <p class="garage-subtitle">Elige tu máquina para la carrera</p>
+    </div>
+
+    <div class="cars-grid">
+      <!-- Ferrari -->
+      <div class="car-card">
+        <div class="car-name">Ferrari F8</div>
+        <div class="car-image">
+          <img src="./cap11.png" alt="Ferrari F8 Tributo">
+        </div>
+        <div class="car-specs">
+          <div class="spec-item">POTENCIA</div>
+          <div class="spec-value">720 CV</div>
+          <div class="spec-item">ACELERACIÓN</div>
+          <div class="spec-value">2.9s</div>
+          <div class="spec-item">VELOCIDAD MÁX</div>
+          <div class="spec-value">340 km/h</div>
+          <div class="spec-item">PESO</div>
+          <div class="spec-value">1,435 kg</div>
+        </div>
+        <label for="maps-radio" class="select-btn">SELECCIONAR</label>
+      </div>
+
+      <!-- Lamborghini -->
+      <div class="car-card">
+        <div class="car-name">Lamborghini</div>
+        <div class="car-image">
+          <img src="./cap12.png" alt="Lamborghini Huracán">
+        </div>
+        <div class="car-specs">
+          <div class="spec-item">POTENCIA</div>
+          <div class="spec-value">640 CV</div>
+          <div class="spec-item">ACELERACIÓN</div>
+          <div class="spec-value">2.9s</div>
+          <div class="spec-item">VELOCIDAD MÁX</div>
+          <div class="spec-value">325 km/h</div>
+          <div class="spec-item">PESO</div>
+          <div class="spec-value">1,422 kg</div>
+        </div>
+        <label for="maps-radio" class="select-btn">SELECCIONAR</label>
+      </div>
+
+      <!-- Porsche -->
+      <div class="car-card">
+        <div class="car-name">Porsche 911</div>
+        <div class="car-image">
+          <img src="./cap13.png" alt="Porsche 911 Turbo S">
+        </div>
+        <div class="car-specs">
+          <div class="spec-item">POTENCIA</div>
+          <div class="spec-value">650 CV</div>
+          <div class="spec-item">ACELERACIÓN</div>
+          <div class="spec-value">2.7s</div>
+          <div class="spec-item">VELOCIDAD MÁX</div>
+          <div class="spec-value">330 km/h</div>
+          <div class="spec-item">PESO</div>
+          <div class="spec-value">1,640 kg</div>
+        </div>
+        <label for="maps-radio" class="select-btn">SELECCIONAR</label>
+      </div>
+
+      <!-- McLaren -->
+      <div class="car-card">
+        <div class="car-name">McLaren 720S</div>
+        <div class="car-image">
+          <img src="./cap14.png" alt="McLaren 720S">
+        </div>
+        <div class="car-specs">
+          <div class="spec-item">POTENCIA</div>
+          <div class="spec-value">720 CV</div>
+          <div class="spec-item">ACELERACIÓN</div>
+          <div class="spec-value">2.8s</div>
+          <div class="spec-item">VELOCIDAD MÁX</div>
+          <div class="spec-value">341 km/h</div>
+          <div class="spec-item">PESO</div>
+          <div class="spec-value">1,419 kg</div>
+        </div>
+        <label for="maps-radio" class="select-btn">SELECCIONAR</label>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <label for="intro-radio" class="nav-btn">VOLVER AL INICIO</label>
+    </div>
+  </div>
+
+  <!-- MAPAS SCREEN -->
+  <div class="screen maps-screen hidden">
+    <div class="garage-header">
+      <h1 class="garage-title">Selecciona el Mapa</h1>
+      <p class="garage-subtitle">Elige tu pista de carrera</p>
+    </div>
+
+    <div class="maps-container">
+      <!-- Mapa 1 -->
+      <div class="map-preview">
+        <div class="map-name">CIUDAD NEÓN</div>
+        <div class="map-image">
+<img src="./cityneon.png" alt=""></div>
+        <div class="map-specs">
+          <div class="map-spec-item"><span class="map-spec-value">Dificultad:</span> Media</div>
+          <div class="map-spec-item"><span class="map-spec-value">Longitud:</span> 5.2 km</div>
+          <div class="map-spec-item"><span class="map-spec-value">Curvas:</span> 18</div>
+          <div class="map-spec-item"><span class="map-spec-value">Tipo:</span> Urbano</div>
+          <div class="map-spec-item"><span class="map-spec-value">Récord:</span> 2:15.430</div>
+        </div>
+        <a href="#" class="select-btn">INICIAR CARRERA</a>
+      </div>
+
+      <!-- Mapa 2 -->
+      <div class="map-preview">
+        <div class="map-name">MONTAÑA VELOZ</div>
+        <div class="map-image">
+<img src="./montañaveloz.png" alt="">
+</div>
+        <div class="map-specs">
+          <div class="map-spec-item"><span class="map-spec-value">Dificultad:</span> Alta</div>
+          <div class="map-spec-item"><span class="map-spec-value">Longitud:</span> 8.7 km</div>
+          <div class="map-spec-item"><span class="map-spec-value">Curvas:</span> 32</div>
+          <div class="map-spec-item"><span class="map-spec-value">Tipo:</span> Montaña</div>
+          <div class="map-spec-item"><span class="map-spec-value">Récord:</span> 4:02.180</div>
+        </div>
+        <a href="#" class="select-btn">INICIAR CARRERA</a>
+      </div>
+
+      <!-- Mapa 3 -->
+      <div class="map-preview">
+        <div class="map-name">DESIERTO INFINITO</div>
+        <div class="map-image">
+<img src="./desiertoinfinito.png" alt=""></div>
+        <div class="map-specs">
+          <div class="map-spec-item"><span class="map-spec-value">Dificultad:</span> Baja</div>
+          <div class="map-spec-item"><span class="map-spec-value">Longitud:</span> 12.3 km</div>
+          <div class="map-spec-item"><span class="map-spec-value">Curvas:</span> 8</div>
+          <div class="map-spec-item"><span class="map-spec-value">Tipo:</span> Recta</div>
+          <div class="map-spec-item"><span class="map-spec-value">Récord:</span> 3:45.210</div>
+        </div>
+        <a href="#" class="select-btn">INICIAR CARRERA</a>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <label for="garage-radio" class="nav-btn">VOLVER AL GARAJE</label>
+      <label for="intro-radio" class="nav-btn">INICIO</label>
+    </div>
+  </div>
+</body>
+</html>
